@@ -142,7 +142,7 @@ REDDIT_CLIENT_ID=your_client_id
 REDDIT_CLIENT_SECRET=your_client_secret
 REDDIT_USERNAME=your_reddit_username
 REDDIT_PASSWORD=your_reddit_password
-REDDIT_USER_AGENT=python:reddittrender:v1.0.0 (by /u/your_username)
+REDDIT_USER_AGENT=python:reddtrender:v1.0.0 (by /u/your_username)
 ```
 
 > **Önemli:** User-Agent alanı Reddit kuralları gereği benzersiz ve tanımlayıcı olmalıdır. Format: `<platform>:<app_id>:v<version> (by /u/<username>)`
@@ -152,7 +152,7 @@ REDDIT_USER_AGENT=python:reddittrender:v1.0.0 (by /u/your_username)
 ```bash
 # Projeyi klonlayın
 git clone <repo-url>
-cd reddittrender
+cd reddtrender
 
 # Sanal ortam oluşturun (önerilir)
 python3 -m venv venv
@@ -203,7 +203,7 @@ python main.py --search "machine learning" --sub learnprogramming
 ## Proje Yapısı
 
 ```
-reddittrender/
+reddtrender/
 ├── main.py              # CLI giriş noktası ve argüman yönetimi
 ├── reddit_client.py     # Reddit OAuth2 API istemcisi
 ├── trends.py            # Trend analiz ve veri işleme

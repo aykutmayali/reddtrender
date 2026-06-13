@@ -15,7 +15,7 @@ USERNAME = os.getenv("REDDIT_USERNAME", "")
 PASSWORD = os.getenv("REDDIT_PASSWORD", "")
 USER_AGENT = os.getenv(
     "REDDIT_USER_AGENT",
-    "python:reddittrender:v1.0.0 (by /u/your_username)"
+    "python:reddtrender:v1.0.0 (by /u/your_username)"
 )
 
 # API Ayarları
