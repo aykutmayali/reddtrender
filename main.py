@@ -35,7 +35,7 @@ console = Console()
 def print_banner():
     """Uygulama başlığını göster."""
     banner = Text()
-    banner.append("Reddit", style="bold red")
+    banner.append("Redd", style="bold red")
     banner.append("Trender", style="bold orange3")
     banner.append(" ─ Trend Analizi", style="dim")
     console.print(Panel(banner, border_style="red", padding=(1, 2)))
