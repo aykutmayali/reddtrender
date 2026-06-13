@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Sanal ortam
+venv/
+.venv/
+env/
+
+# Ortam değişkenleri (GİZLİ BİLGİLER)
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
