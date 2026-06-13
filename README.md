@@ -1,4 +1,4 @@
-# RedditTrender
+# ReddTrender
 
 Reddit API'den trend bilgilerini çeken ve terminalde görsel olarak sunan Python tabanlı CLI uygulaması.
 
@@ -59,12 +59,12 @@ Onaylanırsa `/prefs/apps` sayfasında uygulama oluşturmanıza izin verilecekti
 <summary><strong>Örnek Başvuru Mesajı (İngilizce)</strong></summary>
 
 ```
-Subject: API Access Request — RedditTrender (Personal Script App)
+Subject: API Access Request — ReddTrender (Personal Script App)
 
 Hello Reddit Developer Support,
 
 I would like to request API access for a personal-use script application
-called "RedditTrender."
+called "ReddTrender."
 
 Purpose:
 A local CLI tool that reads publicly available trending posts across
@@ -118,7 +118,7 @@ Bu proje için **"script"** türünü seçin. Script uygulamaları kişisel kull
 | **installed app** | Masaüstü/mobil uygulamalar | Authorization Code / Implicit |
 
 #### 9. Uygulama Bilgilerini Doldurun
-- **name:** Uygulamanızın adı (örn: `RedditTrender`)
+- **name:** Uygulamanızın adı (örn: `ReddTrender`)
 - **description:** Kısa açıklama
 - **about url:** Projenizin web adresi (opsiyonel)
 - **redirect uri:** `http://localhost:8080` (script tipi için zorunlu değil ancak form gereği)

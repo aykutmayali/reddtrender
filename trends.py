@@ -1,5 +1,5 @@
 """
-RedditTrender - Trend analiz modülü
+ReddTrender - Trend analiz modülü
 Reddit verilerinden trend bilgilerini çıkarır ve analiz eder.
 """
 

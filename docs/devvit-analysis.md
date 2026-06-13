@@ -1,6 +1,6 @@
 # Devvit Platformu Analizi
 
-Bu doküman, Reddit'in geliştirici platformu Devvit'in kapsamlı bir analizini sunar. RedditTrender projesi için neden Data API'nin gerekli olduğunu ve Devvit'in bu kullanım senaryosuna neden uygun olmadığını açıklar.
+Bu doküman, Reddit'in geliştirici platformu Devvit'in kapsamlı bir analizini sunar. ReddTrender projesi için neden Data API'nin gerekli olduğunu ve Devvit'in bu kullanım senaryosuna neden uygun olmadığını açıklar.
 
 ## Devvit Nedir?
 
@@ -82,9 +82,9 @@ Bir subreddit'te Devvit uygulamasının çalışması için o subreddit'in moder
 | Dil | TypeScript/Node.js | İstediğiniz dil |
 | Barındırma | Reddit (ücretsiz) | Kendi makineniz |
 
-## RedditTrender İçin Neden Data API Gerekli?
+## ReddTrender İçin Neden Data API Gerekli?
 
-RedditTrender'ın temel işlevi, birden fazla subreddit'ten trend verilerini toplayıp birleştirilmiş bir görünüm sunmaktır. Bu işlem aşağıdaki adımları gerektirir:
+ReddTrender'ın temel işlevi, birden fazla subreddit'ten trend verilerini toplayıp birleştirilmiş bir görünüm sunmaktır. Bu işlem aşağıdaki adımları gerektirir:
 
 1. **Global okuma:** `/r/popular` ve `/best` endpoint'leri tüm Reddit'i kapsar. Devvit'te bu endpoint'lerin karşılığı yoktur.
 
@@ -106,7 +106,7 @@ Devvit aşağıdaki kullanım senaryoları için mükemmel bir platformdur:
 
 ## Sonuç
 
-Devvit, subreddit kapsamındaki topluluk araçları için tasarlanmış güçlü bir platformdur. Ancak RedditTrender gibi kişisel, cross-subreddit, on-demand veri okuma araçları için temel mimari kısıtları nedeniyle uygun değildir. Data API, bu kullanım senaryosu için tek uygun seçenektir.
+Devvit, subreddit kapsamındaki topluluk araçları için tasarlanmış güçlü bir platformdur. Ancak ReddTrender gibi kişisel, cross-subreddit, on-demand veri okuma araçları için temel mimari kısıtları nedeniyle uygun değildir. Data API, bu kullanım senaryosu için tek uygun seçenektir.
 
 ---
 

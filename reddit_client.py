@@ -1,5 +1,5 @@
 """
-RedditTrender - Reddit API istemcisi
+ReddTrender - Reddit API istemcisi
 OAuth2 Script App kimlik doğrulaması ile Reddit API'ye bağlanır.
 Rate limit takibi ve otomatik bekleme mekanizması içerir.
 """

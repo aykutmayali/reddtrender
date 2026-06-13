@@ -1,5 +1,5 @@
 """
-RedditTrender - Yapılandırma modülü
+ReddTrender - Yapılandırma modülü
 Çevre değişkenlerinden Reddit API kimlik bilgilerini yükler.
 """
 

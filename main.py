@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-RedditTrender - Reddit Trend Analizi Uygulaması
+ReddTrender - Reddit Trend Analizi Uygulaması
 Reddit API'den trend bilgilerini çeker ve terminalde görsel olarak sunar.
 
 Kullanım:
@@ -310,7 +310,7 @@ def search_reddit(query, subreddit=None):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="RedditTrender - Reddit Trend Analizi Uygulaması",
+        description="ReddTrender - Reddit Trend Analizi Uygulaması",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Örnekler:
