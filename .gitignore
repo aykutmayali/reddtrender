@@ -7,6 +7,8 @@ dist/
 build/
 *.egg-info/
 *.egg
+data/
+reports/
 
 # Sanal ortam
 venv/

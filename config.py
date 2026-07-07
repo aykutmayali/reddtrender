@@ -28,6 +28,19 @@ DEFAULT_SUBREDDITS = [
     "worldnews", "technology", "programming", "science",
     "gaming", "movies", "music", "sports", "askreddit"
 ]
+DEFAULT_KEYWORDS = [
+    keyword.strip()
+    for keyword in os.getenv(
+        "REDDTRENDER_KEYWORDS",
+        "ai,openai,python,startup,security,privacy,reddit"
+    ).split(",")
+    if keyword.strip()
+]
+
+# Yerel veri ve rapor çıktıları
+DATA_DIR = os.getenv("REDDTRENDER_DATA_DIR", "data")
+DB_PATH = os.getenv("REDDTRENDER_DB_PATH", os.path.join(DATA_DIR, "reddtrender.db"))
+REPORT_DIR = os.getenv("REDDTRENDER_REPORT_DIR", "reports")
 
 # Rate limit yönetimi
 RATE_LIMIT_BUFFER = 5  # Kalan istek sayısı bu değerin altına düşerse bekle

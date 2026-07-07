@@ -200,6 +200,88 @@ python main.py --search "python"
 python main.py --search "machine learning" --sub learnprogramming
 ```
 
+## Trend Radar (Yerel Snapshot ve Raporlama)
+
+Trend Radar, Reddit'ten alınan gönderileri yerel SQLite veritabanına kaydeder ve
+sonraki çalıştırmalarda önceki snapshot ile karşılaştırarak hangi konuların
+hızlandığını gösterir.
+
+```bash
+# Güncel Reddit verisini yerel snapshot olarak kaydet
+python main.py --snapshot
+
+# Son snapshot üzerinden momentum raporu göster
+python main.py --radar
+
+# Tek komutta snapshot al, radar göster ve Markdown raporu üret
+python main.py --snapshot --radar --export markdown
+
+# CSV raporu üret
+python main.py --radar --export csv
+
+# Belirli subreddit listesini takip et
+python main.py --snapshot --subreddits technology,programming,artificial
+
+# Keyword alarmlarını özelleştir
+python main.py --snapshot --keywords "ai,openai,privacy,security"
+
+# Snapshot geçmişini göster
+python main.py --history
+
+# Son snapshot'ın keyword alarmlarını göster
+python main.py --alerts
+```
+
+## Subreddit Analytics Dashboard
+
+Dashboard, Trend Radar snapshot verilerini okunabilir bir HTML panele dönüştürür.
+Ek sunucu veya web framework gerektirmez; çıktı `reports/` içinde tek HTML dosyası
+olarak oluşur.
+
+```bash
+# Son snapshot'tan HTML dashboard üret
+python main.py --dashboard
+
+# Snapshot al ve aynı çalışmada dashboard üret
+python main.py --snapshot --dashboard
+
+# Dashboard'da son 12 snapshot'ı kullan
+python main.py --dashboard --dashboard-history 12
+
+# Belirli snapshot için dashboard üret
+python main.py --dashboard --snapshot-id 3
+
+# Çıktı dosyasını kendin seç
+python main.py --dashboard --dashboard-output reports/subreddit-dashboard.html
+```
+
+Dashboard bölümleri:
+
+- Genel KPI'lar: gönderi sayısı, takip edilen subreddit sayısı, toplam ısı, keyword alarmı.
+- Subreddit ısı liderleri ve önceki snapshot'a göre farklar.
+- Snapshot geçmişinden ısı çizgisi.
+- Keyword alarm yoğunluğu.
+- Momentum gönderileri.
+- Operasyon notları ve kısa aksiyon önerileri.
+
+### Trend Radar Mantığı
+
+- `--snapshot`, `/r/popular`, `r/popular/rising`, `r/popular/top?t=day` ve seçili subreddit'lerin hot akışını toplar.
+- Veriler `data/reddtrender.db` içinde saklanır.
+- `--radar`, son snapshot ile bir önceki snapshot'ı karşılaştırır.
+- Aynı gönderiler için skor ve yorum farkı hesaplanır.
+- Yeni gönderiler yaşına göre normalize edilerek momentum skoruna dahil edilir.
+- Keyword eşleşmeleri snapshot sırasında kaydedilir.
+- `--export markdown` ve `--export csv` çıktıları `reports/` klasörüne yazılır.
+
+### Trend Radar Ortam Değişkenleri
+
+```env
+REDDTRENDER_DATA_DIR=data
+REDDTRENDER_REPORT_DIR=reports
+REDDTRENDER_KEYWORDS=ai,openai,python,startup,security,privacy,reddit
+```
+
 ## Proje Yapısı
 
 ```
@@ -207,9 +289,14 @@ reddtrender/
 ├── main.py              # CLI giriş noktası ve argüman yönetimi
 ├── reddit_client.py     # Reddit OAuth2 API istemcisi
 ├── trends.py            # Trend analiz ve veri işleme
+├── storage.py           # SQLite snapshot saklama katmanı
+├── trend_radar.py       # Snapshot karşılaştırma ve rapor export servisi
+├── analytics_dashboard.py # HTML dashboard üretim servisi
 ├── config.py            # Yapılandırma ve ortam değişkenleri
 ├── requirements.txt     # Python bağımlılıkları
 ├── .env.example         # Örnek ortam değişkenleri
+├── data/                # Yerel SQLite veritabanı (git'e eklenmez)
+├── reports/             # Markdown/CSV rapor çıktıları (git'e eklenmez)
 └── README.md            # Bu dosya
 ```
 
