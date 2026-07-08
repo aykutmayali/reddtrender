@@ -4,7 +4,12 @@ ReddTrender - Yapılandırma modülü
 """
 
 import os
-from dotenv import load_dotenv
+
+try:
+    from dotenv import load_dotenv
+except ModuleNotFoundError:
+    def load_dotenv():
+        return False
 
 load_dotenv()
 

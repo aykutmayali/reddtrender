@@ -1,6 +1,6 @@
 # Reddit Ekosistemi Uygulama Fırsatları Araştırması
 
-Bu doküman, Reddit kullanıcılarının ihtiyaçlarını, moderatörlerin en büyük şikayetlerini, mevcut Devvit uygulamaları ekosistemini ve geliştiriciler için en yüksek potansiyelli uygulama fırsatlarını kapsar. Araştırma, r/ModSupport, r/Devvit, r/redditdev toplulukları, akademik çalışmalar, 9,300+ kullanıcı talebinin analizi ve 2025-2026 Reddit API araç pazarı verilerinden derlenmiştir. Tarih: Haziran 2026.
+Bu doküman, Reddit kullanıcılarının ihtiyaçlarını, moderatörlerin en büyük şikayetlerini, mevcut Devvit uygulamaları ekosistemini ve geliştiriciler için en yüksek potansiyelli uygulama fırsatlarını kapsar. Araştırma, r/ModSupport, r/Devvit, r/redditdev toplulukları, akademik çalışmalar, 9,300+ kullanıcı talebinin analizi ve 2025-2026 Reddit API araç pazarı verilerinden derlenmiştir. Tarih: Haziran 2026. Temmuz 2026 güncellemesiyle bu repo içinde `OpportunityRadarService` eklendi; artık snapshot verisi bu fırsat kategorilerine göre otomatik skorlanabilir.
 
 ---
 
@@ -86,7 +86,7 @@ Günlük kadans + Sıfır sürtünme + Sosyal rekabet + Flair ödülleri = Yüks
 | Spor Oyun Thread'leri | Game Threads | Canlı istatistik, gerçek zamanlı skor |
 | Çizim Oyunları | Hackathon projeleri | UGC içerik, topluluk oylaması |
 
-**Monetizasyon:** Reddit Developer Funds Kasım 2025'te $163K+ ödeme yaptı. Bir geliştirici aylık ~1M görüntülenmeye ulaşmış ancak monetizasyon zorlukları bildiriyor.
+**Monetizasyon:** Reddit Developer Funds H1 2026 terms, Devvit Apps için Daily Qualified Engagers ve Qualified Installs eşiklerine bağlı payout kademeleri tanımlar; üst cumulative payout tablosunda $167K seviyesine kadar listelenmiştir. Buna ek olarak Devvit In-App Purchases, Gold tabanlı premium feature veya oyun item'ları için ayrı bir kanal sağlar.
 
 **Hackathon ödülleri:** $45K-$49K (Mod araçları ve oyun kategorileri).
 
@@ -199,7 +199,7 @@ Reddit moderasyon Devvit uygulamaları 15+ kategoride 120+ uygulamaya ulaşmış
 
 ## Tavsiyeler: Hangi Uygulamayı Geliştirmeli?
 
-Araştırma sonuçlarına dayanarak, en güçlü tavsiye edilen üç uygulama fikri:
+Araştırma sonuçlarına ve ReddTrender'ın yeni Opportunity Radar kategorilerine dayanarak, en güçlü tavsiye edilen üç uygulama fikri:
 
 ### 1. AI İçerik Tespiti — En Büyük Güncel Talep
 
@@ -224,6 +224,23 @@ $20-$100/ay bandında, kodlama gerektirmeyen, subreddit sağlık metrikleri suna
 **Neden şimdi:** Reddit 108M+ DAU'ya ulaştı. Topluluk yöneticileri ve içerik üreticileri veri odaklı kararlar almak istiyor ama erişilebilir araçlar yok.
 
 **Teknik yaklaşım:** Devvit scheduler ile günlük veri toplama, Redis'te metrik depolama, ve Devvit Web ile interaktif dashboard. Haftalık/aylık otomatik PDF rapor.
+
+## ReddTrender ile Nasıl Ölçülür?
+
+Yeni Opportunity Radar akışı, bu dokümandaki fikirleri lokal snapshot verisiyle skorlar:
+
+```bash
+python main.py --snapshot --opportunities
+python main.py --opportunities --opportunity-export markdown
+python main.py --opportunities --opportunity-category ai-content-moderation
+```
+
+Önceliklendirme mantığı:
+
+- Eğer `ai-content-moderation` veya `mod-queue-ops` yükseliyorsa Devvit mod tool MVP'si çıkar.
+- Eğer `daily-community-games` yükseliyorsa Developer Funds ve IAP uyumlu oyun prototipi çıkar.
+- Eğer `subreddit-analytics` yükseliyorsa önce tek-community Devvit dashboard, sonra onaylı hybrid analytics düşünülür.
+- Eğer `market-research-local` yükseliyorsa ticari kullanım ve data policy riski ayrıca değerlendirilir; Reddit data satışı veya izinsiz model eğitimi yapılmaz.
 
 ---
 

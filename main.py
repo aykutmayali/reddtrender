@@ -29,6 +29,7 @@ from trends import TrendAnalyzer
 from storage import TrendStore
 from trend_radar import TrendRadarService
 from analytics_dashboard import SubredditAnalyticsDashboard
+from opportunity_radar import OPPORTUNITY_CATEGORIES, OpportunityRadarService
 import config
 
 
@@ -567,6 +568,113 @@ def export_dashboard(snapshot_id=None, history_limit=8, limit=None, output_path=
     return path
 
 
+def create_opportunity_table(opportunities, title="Opportunity Radar"):
+    """Reddit/Devvit uygulama fırsatları için tablo oluştur."""
+    table = Table(
+        title=title,
+        box=box.ROUNDED,
+        show_lines=True,
+        header_style="bold cyan",
+        title_style="bold",
+        padding=(0, 1),
+    )
+    table.add_column("#", style="dim", width=3, justify="right")
+    table.add_column("Fırsat", style="bold magenta", min_width=18, max_width=28)
+    table.add_column("Skor", style="bold red", width=8, justify="right")
+    table.add_column("Güven", style="cyan", width=8)
+    table.add_column("Platform", style="white", min_width=20, max_width=34)
+    table.add_column("Para Kazanma", style="green", min_width=20, max_width=34)
+    table.add_column("Kanıt", style="yellow", width=12, justify="right")
+
+    for index, opportunity in enumerate(opportunities, 1):
+        table.add_row(
+            str(index),
+            opportunity["name"],
+            f"{opportunity['score']:.1f}",
+            opportunity["confidence"],
+            opportunity["platform_fit"],
+            opportunity["monetization"],
+            f"{opportunity['post_count']} post / {opportunity['subreddit_count']} sub",
+        )
+
+    return table
+
+
+def create_opportunity_evidence_table(opportunity):
+    """Bir fırsat için en güçlü kanıt postlarını göster."""
+    table = Table(
+        title=f"Kanıt: {opportunity['name']}",
+        box=box.SIMPLE,
+        header_style="bold cyan",
+        title_style="bold",
+        padding=(0, 1),
+    )
+    table.add_column("Subreddit", style="magenta", width=14)
+    table.add_column("Momentum", style="bold red", width=10, justify="right")
+    table.add_column("Skor", style="green", width=8, justify="right")
+    table.add_column("Eşleşme", style="yellow", min_width=16, max_width=24)
+    table.add_column("Başlık", style="white", min_width=28, max_width=64)
+
+    for item in opportunity["evidence"]:
+        title = item["title"][:62] + ("..." if len(item["title"]) > 62 else "")
+        table.add_row(
+            item["subreddit"],
+            f"{item['momentum_score']:.1f}",
+            format_score(item["score"]),
+            ", ".join(item["matched_keywords"][:4]),
+            title,
+        )
+
+    return table
+
+
+def show_opportunity_radar(
+    snapshot_id=None,
+    limit=None,
+    category_key=None,
+    export_format=None,
+    output_path=None,
+):
+    """Snapshot verilerinden Reddit/Devvit uygulama fırsatları çıkar."""
+    limit = limit or 10
+    service = OpportunityRadarService()
+    report = service.build(
+        snapshot_id=snapshot_id,
+        top_n=limit,
+        category_key=category_key,
+    )
+
+    snapshot = report["snapshot"]
+    previous = report["previous_snapshot"]
+    summary = Text()
+    summary.append("Snapshot: ", style="bold")
+    summary.append(f"#{snapshot['id']} ({snapshot['created_at']})\n", style="cyan")
+    summary.append("Önceki: ", style="bold")
+    if previous:
+        summary.append(f"#{previous['id']} ({previous['created_at']})\n", style="green")
+    else:
+        summary.append("yok\n", style="yellow")
+    summary.append("Kategori: ", style="bold")
+    summary.append(category_key or "tümü", style="magenta")
+    console.print(Panel(summary, title="Opportunity Radar", border_style="blue", padding=(1, 2)))
+    console.print()
+
+    opportunities = report["opportunities"]
+    if not opportunities:
+        console.print("[yellow]Bu snapshot için skorlanan fırsat bulunamadı.[/yellow]")
+    else:
+        console.print(create_opportunity_table(opportunities))
+        for opportunity in opportunities[:3]:
+            console.print()
+            console.print(create_opportunity_evidence_table(opportunity))
+
+    if export_format:
+        path = service.export_markdown(report, output_path)
+        console.print(f"\n[green]Opportunity raporu yazıldı:[/green] {path}")
+
+    return report
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="ReddTrender - Reddit Trend Analizi Uygulaması",
@@ -587,6 +695,7 @@ def main():
   python main.py --radar                  Son snapshot için trend radar
   python main.py --snapshot --radar --export markdown
   python main.py --dashboard              HTML analytics dashboard üret
+  python main.py --opportunities          Uygulama fırsatlarını skorla
         """,
     )
 
@@ -619,6 +728,18 @@ def main():
         help="Dashboard için okunacak snapshot sayısı",
     )
     parser.add_argument("--dashboard-output", type=str, help="Dashboard HTML çıktı dosyası")
+    parser.add_argument("--opportunities", action="store_true", help="Snapshot verisinden uygulama fırsatlarını skorla")
+    parser.add_argument(
+        "--opportunity-category",
+        choices=sorted(OPPORTUNITY_CATEGORIES),
+        help="Opportunity Radar kategori filtresi",
+    )
+    parser.add_argument(
+        "--opportunity-export",
+        choices=["markdown"],
+        help="Opportunity Radar raporunu dosyaya aktar",
+    )
+    parser.add_argument("--opportunity-output", type=str, help="Opportunity Radar çıktı dosyası")
     parser.add_argument(
         "--export",
         choices=["markdown", "csv"],
@@ -656,12 +777,29 @@ def main():
                     limit=limit,
                     output_path=args.dashboard_output,
                 )
+            if args.opportunities or args.opportunity_export:
+                console.print()
+                show_opportunity_radar(
+                    snapshot_id=result["snapshot"]["id"],
+                    limit=limit,
+                    category_key=args.opportunity_category,
+                    export_format=args.opportunity_export,
+                    output_path=args.opportunity_output,
+                )
         elif args.dashboard or args.dashboard_output:
             export_dashboard(
                 snapshot_id=args.snapshot_id,
                 history_limit=args.dashboard_history,
                 limit=limit,
                 output_path=args.dashboard_output,
+            )
+        elif args.opportunities or args.opportunity_export:
+            show_opportunity_radar(
+                snapshot_id=args.snapshot_id,
+                limit=limit,
+                category_key=args.opportunity_category,
+                export_format=args.opportunity_export,
+                output_path=args.opportunity_output,
             )
         elif args.radar or args.export:
             show_trend_radar(

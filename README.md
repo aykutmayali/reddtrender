@@ -2,31 +2,24 @@
 
 Reddit API'den trend bilgilerini çeken ve terminalde görsel olarak sunan Python tabanlı CLI uygulaması.
 
-## Reddit Responsible Builder Policy (Yeni Doküman)
+## Reddit API ve Devvit Durumu (Temmuz 2026)
 
-Reddit, 2025 yılında **Responsible Builder Policy** adını verdiği yeni bir geliştirici politikası yayınladı. Bu politika, API erişimi için ön onay sürecini zorunlu kılmakta ve daha önce açık olan self-service uygulama oluşturma sistemini kısıtlamaktadır.
+Bu proje iki ayrı Reddit geliştirme yolunu bilinçli biçimde ayırır:
 
-### Reddit'in Onayladığı Uygulama Türleri
+**Data API / OAuth2:** ReddTrender'ın mevcut CLI akışı budur. `/r/popular`, subreddit `hot/rising/top` ve global search gibi cross-subreddit okuma işleri için uygundur. Reddit'in [Responsible Builder Policy](https://support.reddithelp.com/hc/en-us/articles/42728983564564-Responsible-Builder-Policy) dokümanına göre Reddit data erişimi için açık amaç, limitlere uyum ve gerekli durumlarda onay gerekir.
 
-Reddit, Responsible Builder Policy kapsamında aşağıdaki kategorilerde uygulama onayı vermektedir:
+**Devvit:** Reddit içinde çalışan oyunlar, mod araçları ve interaktif community uygulamaları içindir. Devvit app içinde Reddit API kullanırken `reddit` permission açılır; klasik `client_id/client_secret` yönetimi Devvit tarafından soyutlanır. Devvit; subreddit/community bağlamı, review süreci, Redis, scheduler, custom post/webview, payments ve Developer Funds için doğru platformdur.
 
-**Mod Araçları (Mod Tools):** Subreddit moderasyonunu destekleyen botlar, spam filtreleri, otomatik kurallar uygulayan araçlar ve moderatör panelleri gibi topluluk yönetimine doğrudan katkı sağlayan uygulamalar.
+### Güvenlik ve Ticari Kullanım Notu
 
-**Uygulama Şeffaflığı (App Transparency):** Reddit deneyimini geliştiren araçlar, kullanıcı etkileşimini artıran uygulamalar ve Reddit topluluğuna fayda sağlayan okuma/yazma araçları.
-
-**Araştırma ve Kişisel Kullanım:** Akademik araştırma projeleri, kişisel kullanım amaçlı scriptler, veri analizi araçları ve Reddit topluluğuna değer katan non-profit projeler.
-
-### Reddit'in Onaylamadığı Uygulama Türleri
-
-Politika gereği aşağıdaki türde uygulamalar genellikle reddedilmektedir: ticari veri kazıma (scraping) araçları, kullanıcı gizliliğini ihlal eden uygulamalar, topluluk sağlığına zarar veren botlar, izinsiz reklam/promosyon araçları ve Reddit verilerini üçüncü taraflarla paylaşan servisler.
-
-### Onay Süreci
-
-Reddit'in yeni sürecinde self-service uygulama oluşturma kapatılmıştır. Geliştiriciler, API erişimi için destek formları aracılığıyla başvuruda bulunmalıdır. Başvurular 7 gün içinde sonuçlanmayı hedefler. Onaylanan uygulamalar, bot kimliğini user-agent ile açıkça belirtmelidir.
+- `.env` dosyasına gerçek credential yazılabilir, ancak repo'ya commit edilmemelidir. `.gitignore` bunu zaten dışlar.
+- Reddit şifresi, client secret ve token değerleri terminal çıktısına, raporlara veya dokümana yazılmamalıdır.
+- Reddit Developer Terms, commercial use için ayrıca izin/anlaşma gerekebileceğini belirtir. Bu yüzden ReddTrender'ın yerel trend takibi ile para kazanma ürünü aynı şey değildir: para kazanma için en güvenli yol Devvit app, Developer Funds, In-App Purchases veya Reddit'ten yazılı onay alınmış ticari entegrasyondur.
+- Reddit data; reklam hedefleme, veri brokerlığı, izinsiz yeniden satış veya model eğitimi için kullanılmamalıdır.
 
 ## API Key Oluşturma Adımları
 
-> **Not:** Reddit'in Responsible Builder Policy'si gereği, `/prefs/apps` sayfasında doğrudan uygulama oluşturamazsınız. Önce destek talebi (support ticket) gönderip onay almanız gerekir.
+> **Not:** Bu bölüm yalnızca ReddTrender'ın Data API/OAuth2 CLI akışı içindir. Devvit uygulamaları için `devvit.json` permission sistemi kullanılır; Devvit içinde ayrı Reddit client secret yönetilmez.
 
 ### BÖLÜM A: Onay Başvurusu (Zorunlu İlk Adım)
 
@@ -264,6 +257,48 @@ Dashboard bölümleri:
 - Momentum gönderileri.
 - Operasyon notları ve kısa aksiyon önerileri.
 
+## Opportunity Radar (Uygulama Fırsatı Skorlama)
+
+Opportunity Radar, kaydedilmiş snapshot verilerini Reddit/Devvit ürün kategorilerine göre skorlar.
+Amaç, trend takibini doğrudan "hangi uygulamayı geliştirmeliyiz ve nasıl para kazanabiliriz?"
+sorusuna bağlamaktır. Analiz tamamen yereldir; Reddit verisi dış servise gönderilmez.
+
+```bash
+# Son snapshot üzerinden uygulama fırsatlarını skorla
+python main.py --opportunities
+
+# Snapshot al ve aynı çalışmada fırsat raporu üret
+python main.py --snapshot --opportunities
+
+# Markdown fırsat raporu üret
+python main.py --opportunities --opportunity-export markdown
+
+# Tek kategoriye odaklan
+python main.py --opportunities --opportunity-category ai-content-moderation
+```
+
+Skorlanan ana kategoriler:
+
+- `ai-content-moderation`: AI/slop/spam tespiti ve mod queue yardımı.
+- `mod-queue-ops`: Moderatör iş akışı, rapor/ban/appeal önceliklendirme.
+- `subreddit-analytics`: Uygun fiyatlı subreddit büyüme, heat ve health dashboard'ları.
+- `daily-community-games`: Devvit oyunları, trivia, streak ve leaderboard loop'ları.
+- `accessibility-and-summary`: Özet, çeviri, alt text ve uzun thread digest araçları.
+- `settings-backup`: AutoMod/wiki/flair/rule yedekleme ve geri alma.
+- `market-research-local`: Public thread'lerden pain point ve ürün fikri kümeleri.
+
+## Mimari Dokümantasyon
+
+Mevcut Python projesinin ve geliştirilebilecek Reddit/Devvit ürünlerinin çalışma
+mantığı ayrı Markdown dokümanlarında tutulur:
+
+- [Mimari indeks](docs/architecture/README.md)
+- [ReddTrender CLI ve Data API mimarisi](docs/architecture/reddtrender-cli.md)
+- [Trend Radar ve Dashboard mimarisi](docs/architecture/trend-radar-and-dashboard.md)
+- [Opportunity Radar mimarisi](docs/architecture/opportunity-radar.md)
+- [Devvit ürün blueprintleri](docs/architecture/devvit-product-blueprints.md)
+- [Kaynak referansları](docs/architecture/source-references.md)
+
 ### Trend Radar Mantığı
 
 - `--snapshot`, `/r/popular`, `r/popular/rising`, `r/popular/top?t=day` ve seçili subreddit'lerin hot akışını toplar.
@@ -292,6 +327,7 @@ reddtrender/
 ├── storage.py           # SQLite snapshot saklama katmanı
 ├── trend_radar.py       # Snapshot karşılaştırma ve rapor export servisi
 ├── analytics_dashboard.py # HTML dashboard üretim servisi
+├── opportunity_radar.py # Uygulama fırsatı skorlama servisi
 ├── config.py            # Yapılandırma ve ortam değişkenleri
 ├── requirements.txt     # Python bağımlılıkları
 ├── .env.example         # Örnek ortam değişkenleri
@@ -332,6 +368,3 @@ Reddit ücretsiz katman için **dakikada 100 istek** sınırı uygular. Uygulama
 ## Lisans
 
 MIT
-
-###
-updated

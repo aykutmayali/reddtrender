@@ -7,6 +7,7 @@ can be calculated without depending on an external database.
 
 import os
 import sqlite3
+from contextlib import contextmanager
 from datetime import datetime, timezone
 
 import config
@@ -25,10 +26,15 @@ class TrendStore:
         if parent:
             os.makedirs(parent, exist_ok=True)
 
+    @contextmanager
     def _connect(self):
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
-        return conn
+        try:
+            yield conn
+            conn.commit()
+        finally:
+            conn.close()
 
     def _initialize(self):
         with self._connect() as conn:
